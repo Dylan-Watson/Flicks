@@ -10,4 +10,4 @@ app.config.from_object(__name__+'.ConfigClass')
 # * Test route
 @app.route('/',methods=['GET'])
 def testRoute():
-    return render_template('test.html')
+    return render_template('index.html')
