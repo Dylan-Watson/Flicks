@@ -1,0 +1,18 @@
+{% extends "index.html" %} 
+
+{% block bodycss %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/results.css') }}" 
+{% endblock %} 
+
+{% block body%} 
+
+<h1>Results:</h1>
+<div class="row">
+    <div class="col-3">
+        <img height="600" src="https://m.media-amazon.com/images/M/MV5BMTQzMTcwMzgyMV5BMl5BanBnXkFtZTgwMzAyMzQ2MzE@._V1_UY1200_CR90,0,630,1200_AL_.jpg" alt="test">
+    </div>
+    <div class="col-9">
+        <h3>If you liked this movie, add it to your list</h3>
+    </div>   
+</div>
+{% endblock %}

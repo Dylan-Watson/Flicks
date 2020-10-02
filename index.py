@@ -15,3 +15,7 @@ def home():
 @app.route('/discover', methods=['GET'])
 def discover():
     return render_template('discover.html')
+
+@app.route('/results', methods=['GET'])
+def results():
+    return render_template('results.html')
