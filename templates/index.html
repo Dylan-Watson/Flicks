@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Collapsible sidebar using Bootstrap 3</title>
+    <title>Flix</title>
 
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <!-- Our Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}"> 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
     {% block bodycss %}
     {% endblock %}
 </head>
@@ -30,7 +30,7 @@
             <ul class="list-unstyled components">
                 <p class="h2">Home</p>
                 <li>
-                    <a class="tab" href="#">Discover</a>
+                    <a class="tab" href="/discover">Discover</a>
                 </li>
                 <li>
                     <a class="tab" href="#">Search</a>
@@ -51,7 +51,7 @@
         </nav>
 
         <!-- Page Content Holder -->
-        <div id="content" class="text-center">
+        <div id="content">
             {% block body %} {% endblock %}
         </div>
     </div>

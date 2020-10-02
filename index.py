@@ -9,5 +9,9 @@ app.config.from_object(__name__+'.ConfigClass')
 
 # * Test route
 @app.route('/',methods=['GET'])
-def testRoute():
+def home():
     return render_template('index.html')
+
+@app.route('/discover', methods=['GET'])
+def discover():
+    return render_template('discover.html')
