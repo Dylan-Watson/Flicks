@@ -1,6 +1,8 @@
 from flask import Flask, request, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_user import current_user, login_required, roles_required, UserManager, UserMixin
+from flask_user.signals import user_registered
+import sqlite3
 
 app = Flask(__name__)
 
@@ -66,4 +68,37 @@ def gjoin():
 
 @app.route('/profile', methods=['GET'])
 def profile():
-    return render_template('profile.html')
+    c = connect()
+    user_id = (current_user.id,)
+    c.execute('SELECT * FROM attributes WHERE user_id=?',user_id)
+    print(c.fetchone())
+    return render_template('profile.html', username=current_user.username)
+    disconnect()
+
+# region Utility Functions
+def connect():
+    sql = sqlite3.connect('static/db/flicks.db', isolation_level=None)
+    c = sql.cursor()
+    return c
+
+def disconnect(c):
+    try:
+        c.close()
+    except:
+        print('Oops!')
+# endregion
+
+# region Event Handlers
+
+@user_registered.connect_via(app)
+def track_registration(sender, user, **extra):
+    c = connect()
+    user_id = (user.id,)
+    c.execute('INSERT into attributes (user_id) VALUES (?)',user_id)
+    disconnect(c)
+
+# endregion
+
+# region SQL Queries
+
+# endregion
