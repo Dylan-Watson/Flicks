@@ -84,7 +84,13 @@
                 
 
                 // wait for transition end
-                
+                if (this.topCard.lastChild.style.visibility === "hidden"){
+                    this.topCard.lastChild.style.visibility = "visible"
+                }
+                else{
+                    this.topCard.lastChild.style.visibility = "hidden"
+                }
+
                 setTimeout(() => {
                     // reset transform properties
                     this.topCard.style.transform =
@@ -216,11 +222,26 @@
             push() {
 
                 let card = document.createElement('div')
-                card.appendChild(document.createTextNode("Movie Title"))
+
+                let bold = document.createElement('strong')
+                bold.appendChild(document.createTextNode("Movie Title"))
+                card.appendChild(bold)
+
+                let para = document.createElement('para')
+                para.style.fontSize = "30px"
+                para.appendChild(document.createTextNode("Genre, Rating 10/10 IMDB"))
+                card.appendChild(para)
+                
                 let br = document.createElement("br")
                 card.appendChild(br)
-                card.appendChild(document.createTextNode("Movie Descriptions can often be lengthy"))
+
+                let descr = document.createElement('para')
+                descr.style.fontSize = "30px"
+                descr.appendChild(document.createTextNode("Movie descriptions can often be lengthy, but more likely than not they are descriptive. Find out more about this movie in this blurb"))
+                descr.style.visibility = "hidden"
+                card.appendChild(descr)
                 
+
                 card.classList.add('card')
 
                 card.style.backgroundImage =
