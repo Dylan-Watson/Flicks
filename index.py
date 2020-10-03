@@ -19,3 +19,7 @@ def discover():
 @app.route('/results', methods=['GET'])
 def results():
     return render_template('results.html')
+
+@app.route('/gcreate', methods=['GET'])
+def gcreate():
+    return render_template('gcreate.html')
