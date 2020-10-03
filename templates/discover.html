@@ -72,22 +72,25 @@
                 // get finger position on top card
                 let propX = (e.center.x - e.target.getBoundingClientRect().left) / e.target.clientWidth
 
-                // get rotation degrees around Y axis (+/- 15) based on finger position
+                /* // get rotation degrees around Y axis (+/- 15) based on finger position
                 let rotateY = 15 * (propX < 0.05 ? -1 : 1)
-
+                */
                 // enable transform transition
                 this.topCard.style.transition = 'transform 100ms ease-out'
-
+                
                 // apply rotation around Y axis
                 this.topCard.style.transform =
-                    'translateX(-50%) translateY(-50%) rotate(0deg) rotateY(' + rotateY + 'deg) scale(1)'
+                    'translateX(-50%) translateY(-50%) rotate(0deg) rotateY(0deg) scale(0.95)'
+                
 
                 // wait for transition end
+                
                 setTimeout(() => {
                     // reset transform properties
                     this.topCard.style.transform =
                         'translateX(-50%) translateY(-50%) rotate(0deg) rotateY(0deg) scale(1)'
                 }, 100)
+                
 
             }
 
@@ -213,14 +216,18 @@
             push() {
 
                 let card = document.createElement('div')
-
+                card.appendChild(document.createTextNode("Movie Title"))
+                let br = document.createElement("br")
+                card.appendChild(br)
+                card.appendChild(document.createTextNode("Movie Descriptions can often be lengthy"))
+                
                 card.classList.add('card')
 
                 card.style.backgroundImage =
-                    "url('https://picsum.photos/320/320/?random=" + Math.round(Math.random() * 1000000) + "')"
+                    "linear-gradient(to bottom, rgba(0,0,0,0.5), transparent), url('https://picsum.photos/320/320/?random=" + Math.round(Math.random() * 1000000) + "')"
                 
                 card.style.backgroundSize = "cover"
-                
+
                 this.board.insertBefore(card, this.board.firstChild)
 
             }
