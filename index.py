@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_user import current_user, login_required, roles_required, UserManager, UserMixin
 
@@ -41,7 +41,8 @@ db.create_all()
 @app.route('/',methods=['GET'])
 @login_required
 def home():
-    return render_template('index.html')
+    return redirect(url_for('discover'))
+    # return render_template('index.html')
 
 @app.route('/discover', methods=['GET'])
 @login_required
