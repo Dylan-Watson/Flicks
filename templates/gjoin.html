@@ -5,13 +5,15 @@
 {% endblock %}
 
 {% block body %}
-<div class="text-center">
-    <h2>Join a group!</h2>
-<form>
-    <div class="form-group">
-        <input class="form-control form-control-lg" type="text" placeholder="4-digit code">
+<div class="text-center row h-100">
+    <div class="col  my-auto">
+        <h2>Join a group!</h2>
+        <form>
+            <div class="form-group">
+                <input class="form-control form-control-lg" type="text" maxlength="4" placeholder="4-digit code">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
 </div>
 {% endblock %}

@@ -27,3 +27,7 @@ def gcreate():
 @app.route('/gjoin', methods=['GET'])
 def gjoin():
     return render_template('gjoin.html')
+
+@app.route('/profile', methods=['GET'])
+def profile():
+    return render_template('profile.html')
