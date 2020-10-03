@@ -23,3 +23,7 @@ def results():
 @app.route('/gcreate', methods=['GET'])
 def gcreate():
     return render_template('gcreate.html')
+
+@app.route('/gjoin', methods=['GET'])
+def gjoin():
+    return render_template('gjoin.html')
