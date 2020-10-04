@@ -275,21 +275,25 @@ def indivsuggest(UserID):
     GenV = 1
     DirV = 1
     YearV = 1
-    RatM = 2
+    RatM = 1
     
     c = connect()
     d = connect()
-    c.execute("select director, genre, year from attributes where user_id = ?", (UserID,))
+    c.execute("select director, genre, year, movies_swiped from attributes where user_id = ?", (UserID,))
     useratt = c.fetchone()
     c.execute("select title_id, start_year, genres from title_basics")
     movie = c.fetchone()
-    # movieratings = d.execute("select title_id, average_rating from title_ratings")
+    movieratings = d.execute("select title_id, average_rating from title_ratings")
     
     user_directors = loads(useratt[0])
     user_genres = loads(useratt[1])
     user_start_years = loads(useratt[2])
+    user_swiped = loads(useratt[3])
     
-    
+    dirmax = max(user_directors.values())
+    genremax = max(user_genres.values())
+    yearmax = max(user_start_years.values())
+
     scoreranking = {}
     while movie is not None:
         title_id = movie[0]
@@ -297,31 +301,128 @@ def indivsuggest(UserID):
         genres = movie[2].split(',')
         directors = []
         MovieScore = 1
-        if(start_year == "\\N"):
-            movie = c.fetchone()
+        # normalize weights somehow 
+        if(title_id in user_swiped):
+            movie=c.fetchone()
             continue
+
+        if(start_year == "\\N"):
+            movie=c.fetchone()
+            continue
+
+        dirweight = 0
+        genreweight = 0 
+        yearweight = 0 
+
         for director, weight in user_directors.items(): 
             if director in directors:
-                MovieScore += weight * DirV
+                dirweight += weight/dirmax
+                
         for genre, weight in user_genres.items(): 
             if genre in genres:
-                MovieScore += weight * GenV
+                genreweight += weight/genremax
+                
         for year, weight in user_start_years.items():
             if int(year) == start_year:
-                MovieScore += weight * YearV
-        movie=c.fetchone()
+                yearweight += weight/yearmax
+                
+        MovieScore = dirweight/len(user_directors)*DirV + genreweight/len(user_genres)*GenV + yearweight/len(user_start_years)*YearV
+        # moviescore max is GenV + DirV + YearV
+        
         d.execute('select average_rating from title_ratings where title_id=(?)',(title_id,))
         rating = d.fetchone()
         if(rating is None):
+            movie=c.fetchone()
             continue
+
         av_r = rating[0]
-        # av_r = 5
-        scoreranking[title_id] = MovieScore + start_year/2000 + (av_r * RatM)
+        scoreranking[title_id] = MovieScore + (start_year/2020) + (av_r/10 * RatM)
+
+        movie=c.fetchone()
+        
     sort = sorted(scoreranking.items(), key=lambda k: k[1], reverse=True)
     del sort[10:]
     disconnect(c)
     disconnect(d)
     return sort
+    # ["tt0000009", "tt0000335", "tt0000502", "tt0000574", "tt0000615", "tt0000630", "tt0000675", "tt0000676", "tt0000679", "tt0000739"]
+
+def groupsuggest(groupcode):
+
+    GenV = 1
+    DirV = 1
+    YearV = 1
+    RatM = 1
+    
+    c = connect()
+    d = connect()
+
+    c.execute('select director, genre, year, movies_swiped from attributes where user_id in (select users from groups where code = ?)', groupcode) 
+    useratt = c.fetchone()
+    c.execute("select title_id, start_year, genres from title_basics")
+    movie = c.fetchone()
+    movieratings = d.execute("select title_id, average_rating from title_ratings")
+    
+    user_directors = loads(useratt[0])
+    user_genres = loads(useratt[1])
+    user_start_years = loads(useratt[2])
+    user_swiped = loads(useratt[3])
+    
+    dirmax = max(user_directors.values())
+    genremax = max(user_genres.values())
+    yearmax = max(user_start_years.values())
+
+    scoreranking = {}
+    while movie is not None:
+        title_id = movie[0]
+        start_year = movie[1]
+        genres = movie[2].split(',')
+        directors = []
+        MovieScore = 1
+        # normalize weights somehow 
+        if(title_id in user_swiped):
+            movie=c.fetchone()
+            continue
+
+        if(start_year == "\n"):
+            movie=c.fetchone()
+            continue
+
+        dirweight = 0
+        genreweight = 0 
+        yearweight = 0 
+
+        for director, weight in user_directors.items(): 
+            if director in directors:
+                dirweight += weight/dirmax
+                
+        for genre, weight in user_genres.items(): 
+            if genre in genres:
+                genreweight += weight/genremax
+                
+        for year, weight in user_start_years.items():
+            if int(year) == start_year:
+                yearweight += weight/yearmax
+                
+        MovieScore += dirweight/len(user_directors)*DirV + genreweight/len(user_genres)*GenV + yearweight/len(user_start_years)*YearV
+        # moviescore max is GenV + DirV + YearV
+        
+        d.execute('select average_rating from title_ratings where title_id=(?)',(title_id,))
+        rating = d.fetchone()
+        if(rating is None):
+            movie=c.fetchone()
+            continue
+        
+        av_r = rating[0]
+        scoreranking[title_id] = MovieScore + (start_year/2020) + (av_r/10 * RatM)
+
+        movie=c.fetchone()
+    # movie_id movie title genre year release 
+    sort = sorted(scoreranking.items(), key=lambda k: k[1], reverse=True)
+    del sort[3:]
+    disconnect(c)
+    disconnect(d)
+    return [a_tuple[0] for a_tuple in sort]
     # ["tt0000009", "tt0000335", "tt0000502", "tt0000574", "tt0000615", "tt0000630", "tt0000675", "tt0000676", "tt0000679", "tt0000739"]
 
 # endregion
