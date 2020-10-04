@@ -20,44 +20,112 @@
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
     {% block bodycss %}
     {% endblock %}
-
 </head>
 
 <body>
 
     <div class="wrapper">
-        <!-- Sidebar Holder -->
+        <!-- Sidebar  -->
         <nav id="sidebar">
             <div class="sidebar-header">
-                <h1>Flix</h1>
+                <h3>Flix</h3>
             </div>
 
             <ul class="list-unstyled components">
                 <p class="h2">Home</p>
                 <li>
-                    <a class="tab" href="/discover">Discover</a>
+                    <a href="/discover">Discover</a>
                 </li>
                 <li>
-                    <a class="tab" href="#">Search</a>
+                    <a href="#">Search</a>
                 </li>
                 <p class="h2">Group</p>
                 <li>
-                    <a class="tab" href="/gcreate">Create group</a>
+                    <a href="/gcreate">Create group</a>
                 </li>
                 <li>
-                    <a class="tab" href="/gjoin">Join group</a>
+                    <a href="/gjoin">Join group</a>
                 </li>
+
+                <!-- 
+                <li class="active">
+                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
+                    <ul class="collapse list-unstyled" id="homeSubmenu">
+                        <li>
+                            <a href="#">Home 1</a>
+                        </li>
+                        <li>
+                            <a href="#">Home 2</a>
+                        </li>
+                        <li>
+                            <a href="#">Home 3</a>
+                        </li>
+                    </ul>
+                </li>
+                
+
+                <li>
+                    <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Pages</a>
+                    <ul class="collapse list-unstyled" id="pageSubmenu">
+                        <li>
+                            <a href="#">Page 1</a>
+                        </li>
+                        <li>
+                            <a href="#">Page 2</a>
+                        </li>
+                        <li>
+                            <a href="#">Page 3</a>
+                        </li>
+                    </ul>
+                </li>
+                -->
+
             </ul>
 
             <ul class="list-unstyled CTAs">
-                <li><a href="/profile" class="download">Profile</a></li>
-                <li><a href="#" class="article">Logout</a></li>
+                <li>
+                    <a href="/profile" class="download">Profile</a>
+                </li>
+                <li>
+                    <a href="#" class="article">Logout</a>
+                </li>
             </ul>
         </nav>
 
-        <!-- Page Content Holder -->
+        <!-- Page Content  -->
         <div id="content">
             {% block body %} {% endblock %}
+            <!--
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+
+                    <button type="button" id="sidebarCollapse" class="btn btn-info">
+                        <i class="fas fa-align-left"></i>
+                        <span>Toggle Sidebar</span>
+                    </button>
+                    <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="fas fa-align-justify"></i>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="nav navbar-nav ml-auto">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="#">Page</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Page</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Page</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Page</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            -->
         </div>
     </div>
 
