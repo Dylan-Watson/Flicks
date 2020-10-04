@@ -72,16 +72,16 @@ def groupsuggest(groupcode):
     c.execute('select director, genre, year, movies_swiped from attributes where user_id in (select users from groups where code = ?)', groupcode) 
     userlist = c.fetchone()
 
-    user_directors = loads(useratt[0])
-    user_genres = loads(useratt[1])
-    user_start_years = loads(useratt[2])
-    movies_swiped = loads(useratt[3])
-
     newuser_directors = {}
     newuser_genres = {}
     newuser_years = {}
 
     while userlist is not None:
+        
+        user_directors = loads(useratt[0])
+        user_genres = loads(useratt[1])
+        user_start_years = loads(useratt[2])
+        movies_swiped = loads(useratt[3])
         
         for director, weight in user_directors.items():
             if director in newuser_directors:
