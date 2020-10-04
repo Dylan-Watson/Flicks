@@ -251,12 +251,9 @@
                 para.style.fontSize = "30px"
                 para.appendChild(document.createTextNode(`${curMovie.genre}, Rating ${curMovie.rating}/10 IMDB`))
                 card.appendChild(para)
-                
-                let br = document.createElement("br")
-                card.appendChild(br)
 
                 let descr = document.createElement('para')
-                descr.style.fontSize = "30px"
+                descr.style.fontSize = "20px"
                 descr.appendChild(document.createTextNode(curMovie.description))
                 descr.style.visibility = "hidden"
                 card.appendChild(descr)
