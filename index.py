@@ -76,6 +76,10 @@ def joinsuccess():
 def search():
     return render_template('search.html')
 
+@app.route('/searchresults', methods=['GET'])
+@login_required
+def searchresults():
+    return render_template('searchresults.html')
 
 @app.route('/profile', methods=['GET'])
 def profile():
