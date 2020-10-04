@@ -9,7 +9,7 @@
     width: 75vw;
     height: 75vmin;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     margin: auto; 
   }
 

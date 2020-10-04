@@ -87,8 +87,8 @@ a:focus {
     padding: 10px;
 }
 
-#sidebar ul li a {
-    padding: 10px;
+#sidebar ul li a.tab {
+    padding: 10px 10px 10px 50px;
     font-size: 1.1em;
     display: block;
 }
@@ -132,6 +132,7 @@ ul.CTAs a {
     display: block;
     border-radius: 5px;
     margin-bottom: 5px;
+    padding: 10px;
 }
 
 a.download {
