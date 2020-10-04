@@ -6,6 +6,7 @@ from json import dumps, loads
 import sqlite3
 import string 
 import random
+import pprint
 
 app = Flask(__name__)
 
@@ -120,6 +121,12 @@ def profile():
     return render_template('profile.html', username=current_user.username)
     disconnect()
 
+@app.route('/testing')
+@login_required
+def testing():
+    ret = indivsuggest(current_user.id)
+    return dumps(ret)
+
 # region AJAX
 
 @app.route('/join-group', methods=['POST'])
@@ -207,6 +214,110 @@ def generateString():
     res = ''.join(random.choices(string.ascii_uppercase +
                                 string.digits, k = N))
     return res
+
+def swipeupdate(userid, movieid):
+    c = connect()
+    c.execute("select start_year, genres from title_basics where title_id = ?", (movieid,))
+    movie = c.fetchone()
+    if(movie is None):
+        return 'error'
+
+    c.execute("select director, genre, year, movies_swiped from attributes where user_id = ?", (userid,))
+    useratt = c.fetchone()
+    if(useratt is None):
+        return 'error'
+
+    start_year = movie[0]
+    genres = movie[1].split(',')
+    directors = []
+    user_directors = loads(useratt[0])
+    user_genres = loads(useratt[1])
+    user_start_years = loads(useratt[2])
+    movies_swiped = loads(useratt[3])
+
+    genre_ret = user_genres
+    director_ret = user_directors
+    start_year_ret = user_start_years
+
+    for genre in genres:
+        checkTrue = 0
+        for selectedgenre, weight in user_genres.items():
+            if(selectedgenre == genre):
+                genre_ret[genre] += 1
+                checkTrue += 1
+        if(checkTrue == 0):
+            genre_ret[genre] = 1
+            
+    checkTrueY = 0
+    for selectedyear, weight in user_start_years.items():
+        if (int(selectedyear) == start_year):
+            start_year_ret[selectedyear] += 1
+            checkTrueY += 1
+    if checkTrueY == 0:
+        start_year_ret[start_year] = 1
+
+    for director in directors:
+        checkTrue = 0
+        for selecteddirector, weight in user_directors.items():
+            if(selecteddirector == director):
+                director_ret[director] += 1
+                checkTrue += 1
+        if(checkTrue == 0):
+            director_ret[director] = 1
+
+    movies_swiped.append(movieid)
+    c.execute('update attributes set genre=(?),director=(?),year=(?),movies_swiped=(?) where user_id=(?)',(dumps(genre_ret),dumps(director_ret),dumps(start_year_ret),dumps(movies_swiped),userid))
+    disconnect(c)
+
+def indivsuggest(UserID):
+    GenV = 1
+    DirV = 1
+    YearV = 1
+    RatM = 2
+    
+    c = connect()
+    d = connect()
+    c.execute("select director, genre, year from attributes where user_id = ?", (UserID,))
+    useratt = c.fetchone()
+    c.execute("select title_id, start_year, genres from title_basics")
+    movie = c.fetchone()
+    # movieratings = d.execute("select title_id, average_rating from title_ratings")
+    
+    user_directors = loads(useratt[0])
+    user_genres = loads(useratt[1])
+    user_start_years = loads(useratt[2])
+    
+    
+    scoreranking = {}
+    while movie is not None:
+        title_id = movie[0]
+        start_year = movie[1]
+        genres = movie[2].split(',')
+        directors = []
+        MovieScore = 1
+        
+        for director, weight in user_directors.items(): 
+            if director in directors:
+                MovieScore += weight * DirV
+        for genre, weight in user_genres.items(): 
+            if genre in genres:
+                MovieScore += weight * GenV
+        for year, weight in user_start_years.items():
+            if int(year) == start_year:
+                MovieScore += weight * YearV
+        movie=c.fetchone()
+        d.execute('select average_rating from title_ratings where title_id=(?)',(title_id,))
+        rating = d.fetchone()
+        if(rating is None):
+            continue
+        av_r = rating[0]
+        scoreranking[title_id] = MovieScore + (start_year/2000) + (av_r * RatM)
+    sort = sorted(scoreranking.items(), key=lambda k: k[1], reverse=True)
+    del sort[10:]
+    disconnect(c)
+    disconnect(d)
+    return sort
+    # ["tt0000009", "tt0000335", "tt0000502", "tt0000574", "tt0000615", "tt0000630", "tt0000675", "tt0000676", "tt0000679", "tt0000739"]
 
 # endregion
 

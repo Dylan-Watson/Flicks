@@ -1,39 +1,3 @@
-def swipeupdate(userid, movieid)
-    c = connect()
-    c.execute("select start_year, genres from title_basics where title_id = '?'", movieid) #TODO: quotes in placeholder might be wrong here
-    movie = c.fetchone()
-
-    # Can i use fetchone in succession like this??
-
-    c.execute("select director, genre, year from attributes where user_id = '?'", userid)
-    useratt = c.fetchone()
-
-    #TODO: Pseudocode starts here
-    for moviegenre in movie[genres]:
-        checkTrue = 0
-        for selectedgenre in useratt[genre]:
-            if selectedgenre == moviegenre:
-                useratt[genre].selectedgenre += 1
-                checkTrue += 1
-        if checkTrue = 0:
-            Add a new genre to the user attributes with score = 1
-
-    checkTrueY = 0
-    for selectedyear in useratt[year]:
-        if selectedyear == movie[start_year]:
-            useratt[year].selectedyear += 1
-            checkTrueY += 1
-    if checkTrueY = 0:
-        Add a new year to the user attributes with score = 1
-
-    Update SQL database, plugging in new values from useratt
-        
-
-
-
-
-
-
 def indivsuggest(UserID):
     GenV = 1
     DirV = 1
@@ -41,30 +5,39 @@ def indivsuggest(UserID):
     RatM = 2
     
     c = connect()
-    userlist = c.execute("select director, genre, year from attributes where user_id = '?'", UserID) #TODO: quotes in placeholder might be wrong here
+    userlist = c.execute("select director, genre, year from attributes where user_id = ?", UserID)
     movielist = c.execute("select title_id, start_year, genres from title_basics")
     movieratings = c.execute("select title_id, average_rating from title_ratings")
     
-    user = userlist.fetchone()
+    useratt = userlist.fetchone()
+    user_directors = loads(useratt[0])
+    user_genres = loads(useratt[1])
+    user_start_years = loads(useratt[2])
+    
     movie = movielist.fetchone()
-    while user is not None:
-        scoreranking = {}
-        while movie is not None:
-            MovieScore = 0
-            #TODO: Pseudocode starts here
-            for director in user[director]: 
-                if director == movie[director]:
-                    MovieScore += director.score * DirV
-            for genre in user[genre]: 
-                if genre == movie[genre]:
-                    MovieScore += genre.score * GenV
-            for year in user[year]: 
-                if year + n == movie[year]:
-                    MovieScore += year.score * YearV
-            scoreranking[movie[title_id]] = MovieScore
-    Truncate the existing scoreranking dict to include only the top 10 scores
-      disconnect(c)
-    return scoreranking
+    
+    scoreranking = {}
+    while movie is not None:
+        title_id = movie[0]
+        start_year = movie[1]
+        genres = movie[2].split(',')
+        directors = []
+        MovieScore = 0
+
+        for director, weight in user_directors.items(): 
+            if director in directors:
+                MovieScore += weight * DirV
+        for genre, weight in user_genres.items(): 
+            if genre in genres:
+                MovieScore += weight * GenV
+        for year, weight in user_start_years.items(): 
+            if year == start_year:
+                MovieScore += weight * YearV
+        scoreranking[title_id] = MovieScore
+    sort = sorted(scoreranking, key=lambda k: k[1])
+    ret = dict(itertools.islice(sort.items(),3))
+    disconnect(c)
+    return ret
         
         
                 
