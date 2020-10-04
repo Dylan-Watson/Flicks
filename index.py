@@ -140,6 +140,30 @@ def join_group():
     disconnect(c)
     return 'success' 
 
+@app.route('/check-people', methods=['GET'])
+@login_required
+def check_people():
+    code = request.args.get('code',None)
+    if(code is None):
+        return 'error code 1'
+    c = connect()
+    c.execute('select users from groups where code=(?)',(code,))
+    res = c.fetchone()
+    if(res is None):
+        disconnect(c)
+        return 'error code 2'
+    users = loads(res[0])
+    usernames = []
+    for v in users:
+        if(v == current_user.id):
+            continue
+        c.execute('select username from users where id=(?)',(v,))
+        res = c.fetchone()
+        if(res is None):
+            return 'error code 3'
+        usernames.append(res)
+    disconnect(c)
+    return dumps(usernames)
 
 # endregion
 

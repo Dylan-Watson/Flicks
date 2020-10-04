@@ -3,7 +3,7 @@ function submitCode() {
 
     $.post(`/join-group?code=${code}`)
         .done(function (data) {
-            if(data = 'error'){
+            if(data == 'error'){
                 $('#error-msg').show();
                 return;
             }
