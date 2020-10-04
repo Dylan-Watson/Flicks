@@ -75,15 +75,33 @@ def groupsuggest(groupcode):
     user_directors = loads(useratt[0])
     user_genres = loads(useratt[1])
     user_start_years = loads(useratt[2])
+    movies_swiped = loads(useratt[3])
+
+    newuser_directors = {}
+    newuser_genres = {}
+    newuser_years = {}
 
     while userlist is not None:
+        
         for director, weight in user_directors.items():
+            if director in newuser_directors:
+                newuser_directors[director] += weight / movies_swiped
+            else:
+                newuser_directors[director] = weight / movies_swiped
             
         for genre, weight in user_genres.items(): 
-            
+            if genre in newuser_genres:
+                newuser_genres[genre] += weight / movies_swiped
+            else:
+                newuser_genres[genre] = weight
         for year, weight in user_start_years.items():
-
-        userlist - c.fetchone()   
+            if year in newuser_years:
+                newuser_years[year] += weight / movies_swiped
+            else:
+                newuser_genres[year] = weight / movies_swiped
+        userlist = c.fetchone()   
+    
+    
 
 
 
