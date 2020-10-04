@@ -188,13 +188,15 @@ def check_people():
 @app.route('/discover-update', methods=['GET'])
 @login_required
 def discoverUpdate():
-    ret = {
-        'title': "Avengers Endgame",
-        'genre': "Action",
-        'rating': 6.5,
-        'description': "I don't want to write a whole description."
-    }
-    return ret
+    ret = []
+    c = connect()
+    movies = indivsuggest(current_user.id)
+    for e in movies:
+        c.execute('select primary_title, genres from title_basics where title_id=(?)',(e[0],))
+        movie = c.fetchone()
+        ret.append({'title': movie[0], 'genre': movie[1], 'rating': 6.5, 'description': '<a>yeet</a>'})
+
+    return dumps(ret)
 
 # endregion
 
@@ -310,7 +312,7 @@ def indivsuggest(UserID):
             movie=c.fetchone()
             continue
 
-        if(start_year == "\n"):
+        if(start_year == "\\N"):
             movie=c.fetchone()
             continue
 
@@ -443,5 +445,4 @@ def track_registration(sender, user, **extra):
 # endregion
 
 # region SQL Queries
-
 # endregion
