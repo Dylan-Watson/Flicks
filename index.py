@@ -172,6 +172,17 @@ def check_people():
     disconnect(c)
     return dumps(usernames)
 
+@app.route('/discover-update', methods=['GET'])
+@login_required
+def discoverUpdate():
+    ret = {
+        'title': "Avengers Endgame",
+        'genre': "Action",
+        'rating': 6.5,
+        'description': "I don't want to write a whole description."
+    }
+    return ret
+
 # endregion
 
 # region Utility Functions

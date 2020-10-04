@@ -9,6 +9,26 @@
 </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
     <script>
+        var curMovie;
+        var board, carousel;
+        function getMovie(firstLoad) {
+            $.get('/discover-update')
+                .done(function(data) {
+                    // data = JSON.parse(data);
+                    curMovie = data;
+                    if(firstLoad){
+                        board = document.querySelector('#board')
+                        carousel = new Carousel(board)
+                    }
+                })
+                .fail(function() {
+                    console.error('ERROR');
+                });
+        }
+
+        $(document).ready(function () {
+            getMovie(true);
+        });
         /* LikeCarousel (c) 2019 Simone P.M. github.com/simonepm - Licensed MIT */
         /* comment */
         class Carousel {
@@ -224,12 +244,12 @@
                 let card = document.createElement('div')
 
                 let bold = document.createElement('strong')
-                bold.appendChild(document.createTextNode("Movie Title"))
+                bold.appendChild(document.createTextNode(curMovie.title))
                 card.appendChild(bold)
 
                 let para = document.createElement('para')
                 para.style.fontSize = "30px"
-                para.appendChild(document.createTextNode("Genre, Rating 10/10 IMDB"))
+                para.appendChild(document.createTextNode(`${curMovie.genre}, Rating ${curMovie.rating}/10 IMDB`))
                 card.appendChild(para)
                 
                 let br = document.createElement("br")
@@ -237,7 +257,7 @@
 
                 let descr = document.createElement('para')
                 descr.style.fontSize = "30px"
-                descr.appendChild(document.createTextNode("Movie descriptions can often be lengthy, but more likely than not they are descriptive. Find out more about this movie in this blurb"))
+                descr.appendChild(document.createTextNode(curMovie.description))
                 descr.style.visibility = "hidden"
                 card.appendChild(descr)
                 
@@ -254,10 +274,6 @@
             }
 
         }
-
-        let board = document.querySelector('#board')
-
-        let carousel = new Carousel(board)
     </script>
    
     
