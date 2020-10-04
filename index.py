@@ -62,10 +62,16 @@ def results():
     if(code is None):
         return 'error'
     c = connect()
-
-    
+    recs = groupsuggest(code)
+    top3 = []
+    for id in recs:
+        c.execute("Select primary_title, start_year from title_basics where title_id = (?)", id)
+        results = c.fetchone()
+        primary_title = results[0]
+        start_year = results[1]
+        top3.append({"primary_title": primary_title, "start_year": start_year, "id": id})
     disconnect(c)
-    return render_template('results.html')
+    return render_template('results.html', top3=top3)
 
 @app.route('/gcreate', methods=['GET'])
 @login_required
