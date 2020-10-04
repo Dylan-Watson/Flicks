@@ -2,7 +2,10 @@ from flask import Flask, request, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_user import current_user, login_required, roles_required, UserManager, UserMixin
 from flask_user.signals import user_registered
+from json import dumps, loads
 import sqlite3
+import string 
+import random
 
 app = Flask(__name__)
 
@@ -59,7 +62,26 @@ def results():
 @app.route('/gcreate', methods=['GET'])
 @login_required
 def gcreate():
-    return render_template('gcreate.html')
+    c = connect()
+    found = True
+    while(found == True):
+        code = generateString()
+        c.execute('select * from groups where code = ?', (code,))
+        res = c.fetchone()
+        if(res is None):
+            found = False
+    users = [current_user.id]
+    c.execute('insert into groups (code, users) values (?, ?)', (code,dumps(users)))
+    c.execute('select groups from attributes where user_id =(?)', (current_user.id,))
+    groups = loads(c.fetchone()[0])
+    if(len(groups) != 0):
+        for v in groups:
+            c.execute('delete from groups where code=(?)', (v,))
+    groups = [code]
+    print(dumps(groups))
+    c.execute('update attributes set groups=(?) where user_id=(?)', (dumps(groups), current_user.id))
+    disconnect(c)
+    return render_template('gcreate.html',code=code, person=current_user.username)
 
 @app.route('/gjoin', methods=['GET'])
 @login_required
@@ -91,6 +113,7 @@ def profile():
     disconnect()
 
 # region Utility Functions
+
 def connect():
     sql = sqlite3.connect('static/db/flicks.db', isolation_level=None)
     c = sql.cursor()
@@ -101,6 +124,17 @@ def disconnect(c):
         c.close()
     except:
         print('Oops!')
+
+def generateString():
+    # initializing size of string  
+    N = 4
+    
+    # using random.choices() 
+    # generating random strings  
+    res = ''.join(random.choices(string.ascii_uppercase +
+                                string.digits, k = N))
+    return res
+
 # endregion
 
 # region Event Handlers
@@ -108,8 +142,8 @@ def disconnect(c):
 @user_registered.connect_via(app)
 def track_registration(sender, user, **extra):
     c = connect()
-    user_id = (user.id,)
-    c.execute('INSERT into attributes (user_id) VALUES (?)',user_id)
+    user_id = user.id
+    c.execute('INSERT into attributes (user_id,groups) VALUES (?,?)',(user_id,dumps([])))
     disconnect(c)
 
 # endregion
