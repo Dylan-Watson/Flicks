@@ -10,16 +10,20 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
     <script>
         var curMovie;
+        var movies;
         var board, carousel;
+        var ajaxRunning = false;
         function getMovie(firstLoad) {
+            console.log('yeet')
             $.get('/discover-update')
                 .done(function(data) {
-                    // data = JSON.parse(data);
-                    curMovie = data;
+                    data = JSON.parse(data);
+                    movies = data;
                     if(firstLoad){
                         board = document.querySelector('#board')
                         carousel = new Carousel(board)
                     }
+                    ajaxRunning = false;
                 })
                 .fail(function() {
                     console.error('ERROR');
@@ -27,6 +31,7 @@
         }
 
         $(document).ready(function () {
+            console.log('yeet')
             getMovie(true);
         });
         /* LikeCarousel (c) 2019 Simone P.M. github.com/simonepm - Licensed MIT */
@@ -240,34 +245,39 @@
             }
 
             push() {
+                if (movies === undefined || movies == 0) {
+                    getMovie();
+                    setTimeout(function(){this.push()}.bind(this), 5000)
+                } else {
+                    curMovie = movies[0];
+                    movies.shift();
+                    let card = document.createElement('div')
 
-                let card = document.createElement('div')
+                    let bold = document.createElement('strong')
+                    bold.appendChild(document.createTextNode(curMovie.title))
+                    card.appendChild(bold)
 
-                let bold = document.createElement('strong')
-                bold.appendChild(document.createTextNode(curMovie.title))
-                card.appendChild(bold)
+                    let para = document.createElement('para')
+                    para.style.fontSize = "30px"
+                    para.appendChild(document.createTextNode(`${curMovie.genre}, Rating ${curMovie.rating}/10 IMDB`))
+                    card.appendChild(para)
 
-                let para = document.createElement('para')
-                para.style.fontSize = "30px"
-                para.appendChild(document.createTextNode(`${curMovie.genre}, Rating ${curMovie.rating}/10 IMDB`))
-                card.appendChild(para)
+                    let descr = document.createElement('para')
+                    descr.style.fontSize = "20px"
+                    descr.appendChild(document.createTextNode(curMovie.description))
+                    descr.style.visibility = "hidden"
+                    card.appendChild(descr)
+                    
 
-                let descr = document.createElement('para')
-                descr.style.fontSize = "20px"
-                descr.appendChild(document.createTextNode(curMovie.description))
-                descr.style.visibility = "hidden"
-                card.appendChild(descr)
-                
+                    card.classList.add('card')
 
-                card.classList.add('card')
+                    card.style.backgroundImage =
+                        "linear-gradient(to bottom, rgba(0,0,0,0.5), transparent), url('https://picsum.photos/320/320/?random=" + Math.round(Math.random() * 1000000) + "')"
+                    
+                    card.style.backgroundSize = "cover"
 
-                card.style.backgroundImage =
-                    "linear-gradient(to bottom, rgba(0,0,0,0.5), transparent), url('https://picsum.photos/320/320/?random=" + Math.round(Math.random() * 1000000) + "')"
-                
-                card.style.backgroundSize = "cover"
-
-                this.board.insertBefore(card, this.board.firstChild)
-
+                    this.board.insertBefore(card, this.board.firstChild)
+                }
             }
 
         }

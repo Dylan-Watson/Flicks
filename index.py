@@ -182,13 +182,15 @@ def check_people():
 @app.route('/discover-update', methods=['GET'])
 @login_required
 def discoverUpdate():
-    ret = {
-        'title': "Avengers Endgame",
-        'genre': "Action",
-        'rating': 6.5,
-        'description': "I don't want to write a whole description."
-    }
-    return ret
+    ret = []
+    c = connect()
+    movies = indivsuggest(current_user.id)
+    for e in movies:
+        c.execute('select primary_title, genres from title_basics where title_id=(?)',(e[0],))
+        movie = c.fetchone()
+        ret.append({'title': movie[0], 'genre': movie[1], 'rating': 6.5, 'description': '<a>yeet</a>'})
+
+    return dumps(ret)
 
 # endregion
 
@@ -295,7 +297,9 @@ def indivsuggest(UserID):
         genres = movie[2].split(',')
         directors = []
         MovieScore = 1
-        
+        if(start_year == "\\N"):
+            movie = c.fetchone()
+            continue
         for director, weight in user_directors.items(): 
             if director in directors:
                 MovieScore += weight * DirV
@@ -311,7 +315,8 @@ def indivsuggest(UserID):
         if(rating is None):
             continue
         av_r = rating[0]
-        scoreranking[title_id] = MovieScore + (start_year/2000) + (av_r * RatM)
+        # av_r = 5
+        scoreranking[title_id] = MovieScore + start_year/2000 + (av_r * RatM)
     sort = sorted(scoreranking.items(), key=lambda k: k[1], reverse=True)
     del sort[10:]
     disconnect(c)
@@ -333,5 +338,4 @@ def track_registration(sender, user, **extra):
 # endregion
 
 # region SQL Queries
-
 # endregion
