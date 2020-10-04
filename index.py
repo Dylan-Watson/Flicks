@@ -104,6 +104,7 @@ def searchresults():
     return render_template('searchresults.html')
 
 @app.route('/profile', methods=['GET'])
+@login_required
 def profile():
     c = connect()
     user_id = (current_user.id,)
@@ -111,6 +112,36 @@ def profile():
     print(c.fetchone())
     return render_template('profile.html', username=current_user.username)
     disconnect()
+
+# region AJAX
+
+@app.route('/join-group', methods=['POST'])
+@login_required
+def join_group():
+    code = request.args.get('code',None)
+    if(code is None):
+        return 'error code 1'
+    c = connect()
+    c.execute('select users from groups where code=(?)',(code,))
+    res = c.fetchone()
+    if(res is None):
+        disconnect(c)
+        return 'error code 2'
+    users = loads(res[0])
+    users.append(current_user.id)
+    c.execute('update groups set users=(?) where code=(?)', (dumps(users), code))
+    c.execute('select groups from attributes where user_id=(?)', (current_user.id,))
+    groups = loads(c.fetchone()[0])
+    if(groups is None):
+        groups = [code]
+    else:
+        groups.append(code)
+    c.execute('update attributes set groups=(?) where user_id=(?)', (dumps(groups), current_user.id))
+    disconnect(c)
+    return 'success' 
+
+
+# endregion
 
 # region Utility Functions
 

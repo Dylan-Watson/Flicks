@@ -1,9 +1,13 @@
 function submitCode() {
     var code = $("#code-input").val();
 
-    $.ajax(`/join-group?${code}`)
+    $.post(`/join-group?code=${code}`)
         .done(function (data) {
-            // success!
+            if(data = 'error'){
+                $('#error-msg').show();
+                return;
+            }
+            window.location.replace('/joinsuccess')
         })
         .fail(function () {
             $('#error-msg').show();
