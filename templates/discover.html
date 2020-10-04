@@ -261,9 +261,25 @@
     </script>
    
     
-    <h5 style = "text-align:center;"> Click for description</h5>
-    <h5 style = "text-align:center;"> Swipe Left: not interested</h5>
-    <h5 style = "text-align:center;"> Swipe Right: interested</h5>
-    <h5 style = "text-align:center;"> Swipe Up: seen and liked</h5>
-    <h5 style = "text-align:center;"> Swipe Down: seen and disliked</h5>
+    <div class="row mx-auto" style="z-index: -1;">
+        <h6 class="mx-auto" style=text-align:center>Click for description</h6>
+    </div>
+    <div class="row mx-auto">
+        <div class="col-3 mx-auto">
+            <div class="row mx-auto">
+                <h6 class="mx-auto" style = "text-align:center; z-index: -1;">⬅️ Not interested</h6>
+            </div>
+            <div class="row mx-auto">
+                <h6 class="mx-auto" style = "text-align:center; z-index: -1;">➡️ Interested</h6>
+            </div>
+        </div>
+        <div class="col-3 mx-auto">
+            <div class="row mx-auto">
+                <h6 class="mx-auto" style = "text-align:center; z-index: -1;">⬆️ Seen + liked</h6>
+            </div>
+            <div class="row mx-auto">
+                <h6 class="mx-auto" style = "text-align:center; z-index: -1;">⬇️ Seen + disliked</h6>
+            </div>
+        </div>
+    </div>
 {% endblock %}
