@@ -66,6 +66,17 @@ def gcreate():
 def gjoin():
     return render_template('gjoin.html')
 
+@app.route('/joinsuccess', methods=['GET'])
+@login_required
+def joinsuccess():
+    return render_template('joinsuccess.html')
+
+@app.route('/search', methods=['GET'])
+@login_required
+def search():
+    return render_template('search.html')
+
+
 @app.route('/profile', methods=['GET'])
 def profile():
     c = connect()

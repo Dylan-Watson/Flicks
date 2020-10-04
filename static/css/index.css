@@ -58,7 +58,6 @@ a:focus {
 /* align-items: stretch */
 #sidebar {
     width: 17vw;
-    
     z-index: 999;
     background: #7386D5;
     color: #fff;
