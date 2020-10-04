@@ -52,6 +52,13 @@ def home():
 @app.route('/discover', methods=['GET'])
 @login_required
 def discover():
+    code = request.args.get('code',None)
+    if(code is None):
+        return 'error'
+    c = connect()
+
+    
+    disconnect(c)
     return render_template('discover.html')
 
 @app.route('/results', methods=['GET'])
