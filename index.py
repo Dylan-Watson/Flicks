@@ -52,6 +52,11 @@ def home():
 @app.route('/discover', methods=['GET'])
 @login_required
 def discover():
+    return render_template('discover.html')
+
+@app.route('/results', methods=['GET'])
+@login_required
+def results():
     code = request.args.get('code',None)
     if(code is None):
         return 'error'
@@ -59,11 +64,6 @@ def discover():
 
     
     disconnect(c)
-    return render_template('discover.html')
-
-@app.route('/results', methods=['GET'])
-@login_required
-def results():
     return render_template('results.html')
 
 @app.route('/gcreate', methods=['GET'])
